@@ -11,6 +11,7 @@ use crate::prelude::ColliderEnabled;
 use na::Unit;
 use parry::bounding_volume::Aabb;
 use parry::shape::{Shape, TriMeshFlags};
+use parry3d::transformation::ConvexHullError;
 
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[derive(Clone)]
@@ -593,7 +594,13 @@ impl ColliderBuilder {
     /// Initializes a collider builder with a compound shape obtained from the decomposition of
     /// the given trimesh (in 3D) or polyline (in 2D) into convex parts.
     pub fn convex_decomposition(vertices: &[Point<Real>], indices: &[[u32; DIM]]) -> Self {
-        Self::new(SharedShape::convex_decomposition(vertices, indices))
+        Self::new(SharedShape::convex_decomposition(vertices, indices).unwrap())
+    }
+
+    /// Initializes a collider builder with a compound shape obtained from the decomposition of
+    /// the given trimesh (in 3D) or polyline (in 2D) into convex parts.
+    pub fn try_convex_decomposition(vertices: &[Point<Real>], indices: &[[u32; DIM]]) -> Result<Self, ConvexHullError> {
+        Ok(Self::new(SharedShape::convex_decomposition(vertices, indices)?))
     }
 
     /// Initializes a collider builder with a compound shape obtained from the decomposition of
@@ -607,7 +614,7 @@ impl ColliderBuilder {
             vertices,
             indices,
             border_radius,
-        ))
+        ).unwrap())
     }
 
     /// Initializes a collider builder with a compound shape obtained from the decomposition of
@@ -619,7 +626,7 @@ impl ColliderBuilder {
     ) -> Self {
         Self::new(SharedShape::convex_decomposition_with_params(
             vertices, indices, params,
-        ))
+        ).unwrap())
     }
 
     /// Initializes a collider builder with a compound shape obtained from the decomposition of
@@ -635,7 +642,7 @@ impl ColliderBuilder {
             indices,
             params,
             border_radius,
-        ))
+        ).unwrap())
     }
 
     /// Initializes a new collider builder with a 2D convex polygon or 3D convex polyhedron
