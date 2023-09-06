@@ -11,7 +11,7 @@ use crate::prelude::ColliderEnabled;
 use na::Unit;
 use parry::bounding_volume::Aabb;
 use parry::shape::{Shape, TriMeshFlags};
-use parry3d::transformation::ConvexHullError;
+use parry::transformation::ConvexHullError;
 
 #[cfg_attr(feature = "serde-serialize", derive(Serialize, Deserialize))]
 #[derive(Clone)]
